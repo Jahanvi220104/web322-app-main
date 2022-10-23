@@ -25,6 +25,19 @@ module.exports.initialize = function () {
     });
 }
 
+module.exports.addpost = function(postData){
+    return new Promise((resolve,reject)=>{
+        console.log('before, postData.published',postData.published)
+        postData.published = postData.published ? true : false;
+        console.log('after, postData.published',postData.published)
+        
+        postData.id = posts.length + 1;
+        console.log('postData.id',postData.id)
+        posts.push(postData);
+        resolve();
+    });
+}
+
 module.exports.getAllPosts = function(){
     return new Promise((resolve,reject)=>{
         (posts.length > 0 ) ? resolve(posts) : reject("no results returned"); 
@@ -45,17 +58,17 @@ module.exports.getCategories = function(){
 
 // Add post
 function addPost(postData){
-  return new Promise((resolve, reject) => {
-      if(postData.published === undefined) {
-          postData.published = false;
-      } else postData.published = true;
+    return new Promise((resolve, reject) => {
+        if(postData.published === undefined) {
+            postData.published = false;
+        } else postData.published = true;
 
-      postData.id = posts.length + 1;
+        postData.id = posts.length + 1;
 
-      posts.push(postData);
+        posts.push(postData);
 
-      resolve(postData);
-  })
+        resolve(postData);
+    })
 }
 
 
