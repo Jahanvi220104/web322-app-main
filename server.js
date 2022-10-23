@@ -93,7 +93,7 @@ app.get('/categories', (req,res)=>{
 
 
 //GET /POST/ADD
-app.get('/posts/add', (req, res) => {
+app.get('/addPost', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/addPost.html'));
 })
 
