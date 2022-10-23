@@ -45,14 +45,9 @@ app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, "/views/about.html"))
 });
 
-//blog
-app.get('/blog', (req,res)=>{
-  blogData.getPublishedPosts().then((data=>{
-      res.json(data);
-  })).catch(err=>{
-      res.json({message: err});
-  });
-});
+app.get('/blog-service', (req, res) => {
+  service.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
+})
 
 app.get('/post/:value', (req, res) => {
   blogData.getPostById(req.params.value).then(data => res.send(data)).catch(err => res.json(`message: ${err}`));
@@ -79,6 +74,10 @@ app.get('/categories', (req,res)=>{
 });
 
 
+app.get('/addPost', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views/addPost.html'));
+})
+ 
 app.get('/posts/add', (req, res) => {
   res.sendFile(path.join(__dirname, 'views/addPost.html'));
 })
