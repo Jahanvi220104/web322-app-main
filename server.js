@@ -85,7 +85,7 @@ app.get('/posts/add', (req, res) => {
 
 
 // Adding POST routes
-app.post('/posts/add', upload.single("featureImage"), (req, res) => {
+app.post('/addPost', upload.single("featureImage"), (req, res) => {
   if(req.file){
       let streamUpload = (req) => {
           return new Promise((resolve, reject) => {
