@@ -25,6 +25,19 @@ module.exports.initialize = function () {
     });
 }
 
+module.exports.addPost = function(productData){
+    return new Promise((resolve,reject)=>{
+        console.log('before, productData.published',productData.published)
+        productData.published = productData.published ? true : false;
+        console.log('after, productData.published',productData.published)
+        
+        productData.id = products.length + 1;
+        console.log('productData.id',productData.id)
+        products.push(productData);
+        resolve();
+    });
+}
+
 module.exports.getAllPosts = function(){
     return new Promise((resolve,reject)=>{
         (posts.length > 0 ) ? resolve(posts) : reject("no results returned"); 

@@ -9,7 +9,7 @@
 *  Cyclic Web App URL: https://helpful-pear-school-uniform.cyclic.app/
 *
 *  GitHub Repository URL: https://github.com/Jahanvi220104/web322-app-main.git
-* 
+*workshop
 ********************************************************************************/ 
 const express = require('express');
 const blogData = require("./blog-service");
@@ -45,7 +45,7 @@ app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, "/views/about.html"))
 });
 
-app.get('/blog', (req, res) => {
+app.get('/blog-service', (req, res) => {
   service.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
 })
 
