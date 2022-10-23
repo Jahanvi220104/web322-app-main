@@ -25,7 +25,7 @@ module.exports.initialize = function () {
     });
 }
 
-module.exports.addpost = function(postData){
+module.exports.addPost = function(postData){
     return new Promise((resolve,reject)=>{
         console.log('before, postData.published',postData.published)
         postData.published = postData.published ? true : false;
