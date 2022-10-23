@@ -1,15 +1,15 @@
  /*********************************************************************************
-*  WEB322 – Assignment 02
+*  WEB322 – Assignment 03
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
 * 
-*  Name:Jahanvi Jitendra Randhejiya Student ID:159298215 Date: 3rd october, 2022
+*  Name:Jahanvi Jitendra Randhejiya Student ID:159298215 Date: 23rd october, 2022
 *
-*  Cyclic Web App URL: ---------------
+*  Cyclic Web App URL: https://helpful-pear-school-uniform.cyclic.app/
 *
-*  GitHub Repository URL: https://github.com/Jahanvi220104/web322-app.git
-*updated now
+*  GitHub Repository URL: https://github.com/Jahanvi220104/web322-app-main.git
+* 
 ********************************************************************************/ 
 const express = require('express');
 const blogData = require("./blog-service");
