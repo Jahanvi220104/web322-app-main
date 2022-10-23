@@ -58,6 +58,7 @@ app.get('/post/:value', (req, res) => {
   blogData.getPostById(req.params.value).then(data => res.send(data)).catch(err => res.json(`message: ${err}`));
 })
 
+
 app.get('/posts', (req, res) => {
   if (req.query.category) {
       blogData.getPostsByCategory(req.query.category).then(data => res.send(data)).catch(err => res.json(`message: ${err}`));
@@ -67,15 +68,6 @@ app.get('/posts', (req, res) => {
       blogData.getAllPosts().then(data => res.send(data)).catch(err => res.json(`message: ${err}`));
   }
 })
-
-//GET POSTS
-app.get('/posts', (req,res)=>{
-  blogData.getAllPosts().then((data=>{
-      res.json(data);
-  })).catch(err=>{
-      res.json({message: err});
-  });
-});
 
 //GET CATEGORIES
 app.get('/categories', (req,res)=>{
@@ -88,7 +80,7 @@ app.get('/categories', (req,res)=>{
 
 
 app.get('/posts/add', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/addPost.html'));
+  res.sendFile(path.join(__dirname, 'views/addPost.html'));
 })
 
 
@@ -141,6 +133,7 @@ app.post('/posts/add', upload.single("featureImage"), (req, res) => {
   }
 
 })
+
 blogData.initialize().then(()=>{
   app.listen(HTTP_PORT, () => { 
       console.log('server listening on: ' + HTTP_PORT); 
