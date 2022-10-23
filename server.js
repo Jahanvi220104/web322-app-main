@@ -9,7 +9,7 @@
 *  Cyclic Web App URL: https://helpful-pear-school-uniform.cyclic.app/
 *
 *  GitHub Repository URL: https://github.com/Jahanvi220104/web322-app-main.git
-*workshop
+* 
 ********************************************************************************/ 
 const express = require('express');
 const blogData = require("./blog-service");
