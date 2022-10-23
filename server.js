@@ -97,6 +97,11 @@ app.get('/addPost', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/addPost.html'));
 })
 
+app.get('/posts/add', (req, res) => {
+  res.sendFile(path.join(__dirname, '/views/addPost.html'));
+})
+
+
 
 // Adding POST routes
 app.post('/posts/add', upload.single("featureImage"), (req, res) => {
