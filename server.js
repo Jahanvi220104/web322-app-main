@@ -75,7 +75,7 @@ app.get('/categories', (req,res)=>{
 
  
 app.get('/posts/add', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/addPost.html'));
+  res.sendFile(path.join(__dirname, '/addPost'));
 })
 
 
