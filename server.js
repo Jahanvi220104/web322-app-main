@@ -114,7 +114,9 @@ app.post('/posts/add', upload.single("featureImage"), (req, res) => {
 
   function processPost(imageUrl){
       req.body.featureImage = imageUrl;
-
+ blogData.addPost(req.body).then(() => {
+      res.redirect("/posts")
+  
       const postData = {
           "body": req.body.body,
           "title": req.body.title,
