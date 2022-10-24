@@ -124,8 +124,6 @@ app.post('/posts/add', upload.single("featureImage"), (req, res) => {
           "featureImage": imageUrl,
           "published": req.body.published,
       }
-
-      blogData.addPost(postData).then(data => res.redirect('/posts')).catch(err => res.json(`message: ${err}`));
   }
 
 })
