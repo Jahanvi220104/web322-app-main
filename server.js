@@ -75,9 +75,8 @@ app.get('/categories', (req,res)=>{
 
  
 app.get('/posts/add', (req, res) => {
-  res.sendFile(path.join(__dirname, '/posts/add'));
+  res.sendFile(path.join(__dirname, '/views/addPost.html'));
 })
-
 
 
 // Adding POST routes
