@@ -45,7 +45,7 @@ app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, "/views/about.html"))
 });
 
-app.get('/blog', (req, res) => {
+app.get('/blog-service', (req, res) => {
   service.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
 })
 
