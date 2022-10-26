@@ -45,7 +45,7 @@ module.exports.getCategories = function(){
 }
 
 // Add post
-function addPost(postData){
+module.exports.addPost=function(postData){
     return new Promise((resolve, reject) => {
         if(postData.published === undefined) {
             postData.published = false;
@@ -60,7 +60,7 @@ function addPost(postData){
 }
 
 
-function getPostsByCategory (category){
+module.exports.getPostsByCategory= function(category){
   return new Promise((resolve, reject) => {
       const categoryPosts = posts.filter((post) => {
           return post.category == category;
@@ -70,7 +70,7 @@ function getPostsByCategory (category){
   })
 }
 
-function getPostsByMinDate (minDateStr){
+module.exports.getPostsByMinDate = function(minDateStr){
   return new Promise((resolve, reject) => {
       const minDatePosts = posts.filter((post) => {
           return new Date(post.postDate) >= new Date(minDateStr);
@@ -80,7 +80,7 @@ function getPostsByMinDate (minDateStr){
   })
 }
 
-function getPostById (id){
+module.exports.getPostById=function(id){
   return new Promise((resolve, reject) => {
       const idPosts = posts.filter((post) => {
           return post.id == id;
