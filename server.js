@@ -45,8 +45,8 @@ app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, "/views/about.html"))
 });
 
-app.get('/blog-service', (req, res) => {
-  service.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
+app.get('/blog', (req, res) => {
+  blogData.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
 })
 
 app.get('/post/:id', (req, res) => {
@@ -75,8 +75,9 @@ app.get('/categories', (req,res)=>{
 
  
 app.get('/posts/add', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/addPost.html'));
+  res.sendFile(path.join(__dirname, '/posts/add'));
 })
+
 
 
 // Adding POST routes
@@ -113,9 +114,7 @@ app.post('/posts/add', upload.single("featureImage"), (req, res) => {
 
   function processPost(imageUrl){
       req.body.featureImage = imageUrl;
- blogData.addPost(req.body).then(() => {
-      res.redirect("/posts")
-  
+
       const postData = {
           "body": req.body.body,
           "title": req.body.title,
@@ -124,6 +123,8 @@ app.post('/posts/add', upload.single("featureImage"), (req, res) => {
           "featureImage": imageUrl,
           "published": req.body.published,
       }
+
+      blogData.addPost(postData).then(data => res.redirect('/posts')).catch(err => res.json(`message: ${err}`));
   }
 
 })
