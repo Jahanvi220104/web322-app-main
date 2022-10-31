@@ -1,0 +1,33 @@
+<div class="row">
+    <section class="main col-md-9">
+        <article>
+            <h2>{{title}}</h2>
+            <img src="singers-taylor-swift-american-blonde-singer-hd-wallpaper-thumb.jpg" alt="feature Image" style="width:100%" />
+            <br /><br />
+            {{#safeHTML body}}{{body}}{{/safeHTML}} 
+             <br /><br />
+            <strong>Category:{{Category}}</strong> 3<br />
+            <strong>Last Updated:{{Last Updated}}</strong> 2020-02-25
+
+        </article>
+    </section>
+    <aside class="col-md-3">
+        <br /><br />
+        <h4>Posts</h4>
+        
+        <ul class="list-group">
+            {{#each data.posts}}
+            <a href="/blog/id?category={{../viewingCategory}}" class="list-group-item">{{title}}</a>
+            {{/each}}
+        </ul>
+
+        <h4>Categories</h4>
+
+        <ul class="list-group">
+             {{#each data.categories}}
+            <a href="/blog?category=id" class="list-group-item">{{category}}</a>
+            {{/each}}
+        
+        </ul>
+    </aside>
+</div>
