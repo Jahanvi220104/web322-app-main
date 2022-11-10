@@ -4,7 +4,7 @@
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
 * 
-*  Name:Jahanvi Jitendra Randhejiya Student ID:159298215 Date: 23rd october, 2022
+*  Name:Jahanvi Jitendra Randhejiya Student ID:159298215 Date: 9th november, 2022
 *
 *  Cyclic Web App URL: https://helpful-pear-school-uniform.cyclic.app/
 *
@@ -15,6 +15,7 @@ const express = require('express');
 const blogData = require("./blog-service");
 const path = require("path");
 const app = express();
+//require strip-js
 const stripJs = require('strip-js');
 
 const exphbs = require('express-handlebars');
@@ -24,6 +25,7 @@ app.engine('.hbs', exphbs.engine({
   helpers :{
              navLink: function(url, options){
              return '<li' + ((url == app.locals.activeRoute) ? ' class="active" ' : '') + '><a href="' + url + '">' + options.fn(this) + '</a></li>';},
+            
              equal: function (lvalue, rvalue, options) {
               if (arguments.length < 3)
                   throw new Error("Handlebars Helper equal needs 2 parameters");
@@ -33,6 +35,7 @@ app.engine('.hbs', exphbs.engine({
                   return options.fn(this);
               }
              },
+             
              safeHTML: function(context){
               return stripJs(context);
           }
@@ -63,7 +66,7 @@ const upload = multer();
 
 app.use(function(req,res,next){
   let route = req.path.substring(1);
-  app.locals.activeRoute = (route == "/") ? "/" : "/" + route.replace(/\/(.*)/, "");
+  app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, ""));
   app.locals.viewingCategory = req.query.category;
   next();
 });
@@ -72,7 +75,7 @@ app.use(function(req,res,next){
 
 // GET ABOUT
 app.get('/', (req, res) => {
-  res.redirect("/about");
+  res.redirect("/blog");
 });
 
 //about
@@ -83,9 +86,105 @@ app.get('/about', (req, res) => {
   })
 });
 
-app.get('/blog', (req, res) => {
-  blogData.getPublishedPosts().then(data => res.json(data)).catch(err => res.json(err));
-})
+//blog
+app.get('/blog', async (req, res) => {
+  
+  // Declare an object to store properties for the view
+  let viewData = {};
+
+  try{
+
+      // declare empty array to hold "post" objects
+      let posts = [];
+
+      // if there's a "category" query, filter the returned posts by category
+      if(req.query.category){
+          // Obtain the published "posts" by category
+          posts = await blogData.getPublishedPostsByCategory(req.query.category);
+      }else{
+          // Obtain the published "posts"
+          posts = await blogData.getPublishedPosts();
+      }
+
+      // sort the published posts by postDate
+      posts.sort((a,b) => new Date(b.postDate) - new Date(a.postDate));
+
+      // get the latest post from the front of the list (element 0)
+      let post = posts[0]; 
+
+      // store the "posts" and "post" data in the viewData object (to be passed to the view)
+      viewData.posts = posts;
+      viewData.post = post;
+
+  }catch(err){
+      viewData.message = "no results";
+  }
+
+  try{
+      // Obtain the full list of "categories"
+      let categories = await blogData.getCategories();
+
+      // store the "categories" data in the viewData object (to be passed to the view)
+      viewData.categories = categories;
+  }catch(err){
+      viewData.categoriesMessage = "no results"
+  }
+
+  // render the "blog" view with all of the data (viewData)
+  res.render("blog", {data: viewData})
+
+});
+
+//blog:id
+app.get('/blog/:id', async (req, res) => {
+
+  // Declare an object to store properties for the view
+  let viewData = {};
+
+  try{
+
+      // declare empty array to hold "post" objects
+      let posts = [];
+
+      // if there's a "category" query, filter the returned posts by category
+      if(req.query.category){
+          // Obtain the published "posts" by category
+          posts = await blogData.getPublishedPostsByCategory(req.query.category);
+      }else{
+          // Obtain the published "posts"
+          posts = await blogData.getPublishedPosts();
+      }
+
+      // sort the published posts by postDate
+      posts.sort((a,b) => new Date(b.postDate) - new Date(a.postDate));
+
+      // store the "posts" and "post" data in the viewData object (to be passed to the view)
+      viewData.posts = posts;
+
+  }catch(err){
+      viewData.message = "no results";
+  }
+
+  try{
+      // Obtain the post by "id"
+      viewData.post = await blogData.getPostById(req.params.id);
+  }catch(err){
+      viewData.message = "no results"; 
+  }
+
+  try{
+      // Obtain the full list of "categories"
+      let categories = await blogData.getCategories();
+
+      // store the "categories" data in the viewData object (to be passed to the view)
+      viewData.categories = categories;
+  }catch(err){
+      viewData.categoriesMessage = "no results"
+  }
+
+  // render the "blog" view with all of the data (viewData)
+  res.render("blog", {data: viewData})
+});
 
 /*
 app.get('/post/:id', (req, res) => {
@@ -94,17 +193,17 @@ app.get('/post/:id', (req, res) => {
 */
 
 app.get("/post/:id", (req, res) => {
-  blogData.getPostById(req.params.id).then((post) => {
-    var array = []
-    array.push(post)
-    res.render('posts', {
-      data: array,
+  blogData.getPostById(req.params.id).then(data=>
+    {res.render('post', {
+      data: 'posts',
       layout: 'main'
     })
   }).catch((err) => {
     res.json({message: err})
   })
 })
+
+
 
 app.get('/posts', (req, res) => {
   if (req.query.category) {
@@ -185,51 +284,6 @@ app.post('/posts/add', upload.single("featureImage"), (req, res) => {
 //ERROR
 app.use(function (req, res) {
   res.status(404).sendFile(path.join(__dirname, "Page Not Found"));
-});
-
-///adding Blog/:d route
-app.get('/blog/:id', async (req, res) => {
-
-   let viewData = {};
-
-  try{
-
-     let posts = [];
-
-      if(req.query.category){
-         
-          posts = await blogData.getPublishedPostsByCategory(req.query.category);
-      }else{
-         
-          posts = await blogData.getPublishedPosts();
-      }
-
-     
-      posts.sort((a,b) => new Date(b.postDate) - new Date(a.postDate));
-
-        viewData.posts = posts;
-
-  }catch(err){
-      viewData.message = "no results";
-  }
-
-  try{
-      
-      viewData.post = await blogData.getPostById(req.params.id);
-  }catch(err){
-      viewData.message = "no results"; 
-  }
-
-  try{
-    
-      let categories = await blogData.getCategories();
-
-         viewData.categories = categories;
-  }catch(err){
-      viewData.categoriesMessage = "no results"
-  }
-
-   res.render("blog", {data: viewData})
 });
 
 blogData.initialize().then(()=>{
