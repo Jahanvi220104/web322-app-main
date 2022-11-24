@@ -12,6 +12,11 @@ var sequelize = new Sequelize('epbkhlvf', 'epbkhlvf', '7L_ajR0P-E4zk-Vx9HW1rQBhm
 
 //post model
 var Post = sequelize.define('Post', {
+  postID: {
+    type: Sequelize.INTEGER,
+    primaryKey: true, 
+    autoIncrement: true
+  },
     body: Sequelize.TEXT,
     title: Sequelize.STRING,
     postDate: Sequelize.DATE,
@@ -21,10 +26,18 @@ var Post = sequelize.define('Post', {
 
 //category model
 var Category = sequelize.define('Category', {
+  categoryID: {
+    type: Sequelize.INTEGER,
+    primaryKey: true, 
+    autoIncrement: true
+  },
     category: Sequelize.STRING
 });
 
 Post.belongsTo(Category, {foreignKey: "category"});
+
+let posts = []
+let albums = []
 
 module.exports.initialize = () => {
     return new Promise((resolve,reject) => {
@@ -46,7 +59,7 @@ var BlogEntry = sequelize.define('BlogEntry', {
 */
 
 
-module.exports.getAllPosts = () => {
+module.exports.getallPosts = () => {
     return new Promise((resolve, reject) => {
         Post
           .findAll()
@@ -59,14 +72,14 @@ module.exports.getAllPosts = () => {
       });
 };
 
-module.exports.getPostsByCategory= function(category){
+module.exports.getPostsByCategory= function(categoryID){
     return new Promise((resolve,reject) => {
         Post.findAll({
             where:{
-                categoryNum: category
+                categoryID: categoryID
             }
         })
-        .then(resolve(Post.findAll({ where: {category: category }})))
+        .then(resolve(Post.findAll({ where: {categoryID: categoryID }})))
         .catch(reject('no results returned'))
     })
 
@@ -87,25 +100,25 @@ module.exports.getPostsByMinDate = function(minDateStr){
           resolve(data);
         })
         .catch((err) => {
-          reject("no results returned");
+          reject("no results returned"+err);
         });
     });
 
 };
 
-module.exports.getPostById = function(id){
+module.exports.getPostById = function(postID){
     return new Promise((resolve, reject) => {
         Post
           .findAll({
             where: {
-              id: id,
+              postID: postID,
             },
           })
-          .then((data) => {
-            resolve(data[0]);
+          .then((post) => {
+            resolve(post);
           })
           .catch((err) => {
-            reject("no results returned");
+            reject("no results returned"+err);
           });
       });
 };
@@ -127,7 +140,7 @@ module.exports.addPost=function(postData){
             resolve();
           })
           .catch((err) => {
-            reject("unable to create post");
+            reject("unable to create post!"+err);
           });
       });
 };
@@ -164,8 +177,8 @@ module.exports.getPublishedPostsByCategory = function (category) {
 module.exports.getCategories = () => {
     return new Promise((resolve, reject) => {
       Category.findAll()
-        .then((data) => {
-          resolve(data);
+        .then((categoryData) => {
+          resolve(categoryData);
         })
         .catch(() => {
           reject("no results returned");
@@ -201,33 +214,33 @@ module.exports.addCategory = function (categoryData) {
     });
   };
 
-module.exports.deletePostById = function (id) {
+module.exports.deletePostById = function (postID) {
     return new Promise((resolve, reject) => {
       Post.destroy({
         where: {
-          id: id,
+          postID: postID,
         },
       })
-        .then((data) => {
+        .then(() => {
           resolve();
         })
-        .catch(() => {
-          reject("unable to delete post");
+        .catch((err) => {
+          reject("unable to delete post"+err);
         });
     });
   };
 
 
-module.exports.deleteCategoryById = function (id) {
+module.exports.deleteCategoryById = function (categoryID) {
     return new Promise((resolve, reject) => {
         Category.destroy({
             where: {
-                id: id
+                categoryID: categoryID
             }
-        }).then( data => {
+        }).then( () => {
             resolve();
         }).catch(() => {
-            reject("unable to delete category");
+            reject("unable to delete category!"+err);
         });
     });
 }

@@ -1,5 +1,5 @@
  /*********************************************************************************
-*  WEB322 – Assignment 03
+*  WEB322 – Assignment 04
 *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part 
 *  of this assignment has been copied manually or electronically from any other source 
 *  (including 3rd party web sites) or distributed to other students.
@@ -201,7 +201,10 @@ app.get('/post/:id', (req, res) => {
 
 app.get('/post/:id', (req,res)=>{
   blogData.getPostById(req.params.id).then(data=>{
-      res.json(data);
+    res.render('posts', {
+      data: post,
+      layout: 'main'
+    })
   }).catch(err=>{
       res.json({message: err});
   });
@@ -219,7 +222,7 @@ app.get('/posts', (req, res) => {
     .then(data => res.render("posts", {posts: data}))
     .catch(err => res.render("posts", {message: "no results"}));
   } else {
-    blogData.getAllPosts()
+    blogData.getallPosts()
     .then(data => res.render("posts", {posts: data}))
     .catch(err => res.render("posts", {message: "no results"})); 
   }
@@ -228,13 +231,22 @@ app.get('/posts', (req, res) => {
 
 
 //posts 
-app.get('/posts/add', (req, res) => {
-  res.render('addPost', {
-    data: 'categories',
-    layout: 'main'
-  })
-});
+// app.get('/posts/add', (req, res) => {
+//   res.render('addPost', {
+//     data: 'categories',
+//     layout: 'main'
+//   })
+// });
 
+app.get("/posts/add", (req, res) => {
+  // res.sendFile(path.join(__dirname, "/views/albumForm.html"))
+  blogData.getCategories().then((categories) => {
+    res.render('addPost', {
+      data: categories,
+      layout: 'main'
+    })
+  })
+})
 
 // Adding POST routes
 app.post('/posts/add', upload.single("featureImage"), (req, res) => {
@@ -268,24 +280,12 @@ app.post('/posts/add', upload.single("featureImage"), (req, res) => {
       processPost("");
   }
 
-  function processPost(imageUrl){
-      req.body.featureImage = imageUrl;
-
-      const postData = {
-          "body": req.body.body,
-          "title": req.body.title,
-          "postDate": new Date().toISOString().split('T')[0],
-          "category": req.body.category,
-          "featureImage": imageUrl,
-          "published": req.body.published,
-      }
-      
-      blogData.addPost(postData).then(data => res.render("addPost", {categories: data})).catch((err) => {
-        res.status(500).send(err);
-      });
-      
-    }
-
+  function processPost(imageUrl) {
+    req.body.featureImage = imageUrl;
+    blogData.addPost(req.body).then(() => {
+      res.redirect("/posts")
+    })
+  }
 });
 
 
@@ -320,24 +320,26 @@ app.post("/categories/add", (req, res) => {
 });
 
 //delete by id by post
+app.get("/posts/delete/:id", (req, res) => {
+  soundService.deletePostbyId(req.params.id).then(() => {
+    res.redirect("/posts")
+  }).catch((err) => {
+    console.log(err)
+    res.json({message: err})
+  })
+})
 
-app.get('/posts/delete/:id', (req,res) => {
-  blogData.deletePostById(req.params.value)
-  .then(res.redirect("/posts"))
-  .catch(err => res.status(500).send("Unable to Remove Post / Post not found"))
-});
 
 //delete id by categories
+
 app.get("/categories/delete/:id", (req, res) => {
-  blogData
-    .deleteCategoryById(req.params.id)
-    .then(() => {
-      res.redirect("/categories");
-    })
-    .catch((err) => {
-      res.status(500).send("Unable to Remove Category / Category Not Found");
-    });
-});
+  soundService.deleteCategoryById(req.params.id).then(() => {
+    res.redirect("/categories")
+  }).catch((err) => {
+    console.log(err)
+    res.json({message: err})
+  })
+})
 
 
 blogData.initialize().then(()=>{
